@@ -35,8 +35,8 @@ function loadSessionData() {
 
         entity.setAttribute('position', `${x} ${y} ${z}`);
         entity.setAttribute('rotation', `0 ${obj.azimuth} ${obj.rotation}`);
-        entity.setAttribute('width', `obj.size`);
-        entity.setAttribute('height', `obj.size`);
+        entity.setAttribute('width', ${obj.size});
+        entity.setAttribute('height', ${obj.size});
 
         container.appendChild(entity);
 
