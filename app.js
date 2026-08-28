@@ -55,6 +55,7 @@ function loadSessionData() {
 function initZoom() {
   let currentScale = 1;
 
+  // Zoom con la rueda del ratón (Escritorio)
   window.addEventListener('wheel', (event) => {
     const container = document.getElementById('celestial-container');
     if (event.deltaY < 0) {
@@ -65,6 +66,7 @@ function initZoom() {
     container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
   });
 
+  // Zoom táctil optimizado con passive: true para evitar bloqueos del navegador
   let initialDistance = null;
 
   window.addEventListener('touchmove', (event) => {
@@ -84,19 +86,19 @@ function initZoom() {
       const container = document.getElementById('celestial-container');
       const diff = currentDistance - initialDistance;
 
-      if (diff > 10) {
-        currentScale += 0.02;
+      if (Math.abs(diff) > 5) { // Sensibilidad mejorada
+        if (diff > 0) {
+          currentScale += 0.015;
+        } else {
+          currentScale = Math.max(0.1, currentScale - 0.015);
+        }
         initialDistance = currentDistance;
-      } else if (diff < -10) {
-        currentScale = Math.max(0.1, currentScale - 0.02);
-        initialDistance = currentDistance;
+        container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
       }
-
-      container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
     }
-  });
+  }, { passive: true });
 
   window.addEventListener('touchend', () => {
     initialDistance = null;
-  });
+  }, { passive: true });
 }
