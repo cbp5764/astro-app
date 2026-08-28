@@ -24,7 +24,7 @@ function loadSessionData() {
         const entity = document.createElement('a-image');
         entity.setAttribute('src', obj.image);
         
-        // Cálculo original usando azimut y altitud del JSON
+        // Cálculo de coordenadas usando azimut y altitud
         const phi = THREE.MathUtils.degToRad(90 - obj.altitude);
         const theta = THREE.MathUtils.degToRad(obj.azimuth);
         const radius = 10;
@@ -34,16 +34,21 @@ function loadSessionData() {
         const z = -radius * Math.sin(phi) * Math.cos(theta);
 
         entity.setAttribute('position', `${x} ${y} ${z}`);
-        entity.setAttribute('rotation', `0 ${obj.azimuth} ${obj.rotation}`);
-        entity.setAttribute('width', '1');
-        entity.setAttribute('height', '1');
+
+        // Tamaño basado en la variable 'size' del JSON (por defecto 3 si no existe)
+        const objectSize = obj.size || 3;
+        entity.setAttribute('width', objectSize);
+        entity.setAttribute('height', objectSize);
 
         container.appendChild(entity);
 
-        // Forzar que la imagen mire siempre hacia el centro (0, 0, 0) donde está la cámara
+        // Fijar la orientación de forma estable tras la carga completa
         entity.addEventListener('loaded', () => {
-          entity.object3D.lookAt(0, y, 0); // Mantiene la altura y gira hacia el centro
-        });        
+          setTimeout(() => {
+            entity.object3D.lookAt(0, y, 0);
+            entity.object3D.rotateZ(THREE.MathUtils.degToRad(45)); // Ajusta la rotación estática si la necesitas
+          }, 100);
+        });
       });
     })
     .catch(error => console.error('Error cargando el archivo session.json:', error));
