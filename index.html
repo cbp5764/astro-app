@@ -6,7 +6,7 @@
     <title>Astro AR Session</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="app.js?v=10" defer></script>
+    <script src="app.js?v=11" defer></script>
     <style>
       html, body {
         margin: 0;
@@ -21,21 +21,21 @@
         background: rgba(0, 0, 0, 0.9);
         z-index: 999999;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
+        /* Alinea el contenido arriba a la izquierda */
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 30px;
         box-sizing: border-box;
       }
       #start-btn {
-        padding: 16px 32px;
-        font-size: 18px;
+        padding: 14px 28px;
+        font-size: 16px;
         background: #007aff;
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 10px;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       }
     </style>
   </head>
