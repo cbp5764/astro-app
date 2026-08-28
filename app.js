@@ -35,15 +35,15 @@ function loadSessionData() {
 
         entity.setAttribute('position', `${x} ${y} ${z}`);
         entity.setAttribute('rotation', `0 ${obj.azimuth} ${obj.rotation}`);
-        entity.setAttribute('width', '3');
-        entity.setAttribute('height', '3');
+        entity.setAttribute('width', '1');
+        entity.setAttribute('height', '1');
 
         container.appendChild(entity);
 
         // Forzar que la imagen mire siempre hacia el centro (0, 0, 0) donde está la cámara
         entity.addEventListener('loaded', () => {
           entity.object3D.lookAt(0, y, 0); // Mantiene la altura y gira hacia el centro
-          entity.object3D.rotateZ(THREE.MathUtils.degToRad(45));
+          entity.object3D.rotateZ(THREE.MathUtils.degToRad(obj.rotation));
         });
       });
     })
