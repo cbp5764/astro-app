@@ -12,6 +12,7 @@ document.getElementById('start-btn').addEventListener('click', async () => {
   }
   document.getElementById('permission-overlay').style.display = 'none';
   loadSessionData();
+  initZoom();
 });
 
 function loadSessionData() {
@@ -24,7 +25,6 @@ function loadSessionData() {
         const entity = document.createElement('a-image');
         entity.setAttribute('src', obj.image);
         
-        // Cálculo de coordenadas usando azimut y altitud
         const phi = THREE.MathUtils.degToRad(90 - obj.altitude);
         const theta = THREE.MathUtils.degToRad(obj.azimuth);
         const radius = 10;
@@ -35,21 +35,68 @@ function loadSessionData() {
 
         entity.setAttribute('position', `${x} ${y} ${z}`);
 
-        // Tamaño basado en la variable 'size' del JSON (por defecto 3 si no existe)
         const objectSize = obj.size || 3;
         entity.setAttribute('width', objectSize);
         entity.setAttribute('height', objectSize);
 
         container.appendChild(entity);
 
-        // Fijar la orientación de forma estable tras la carga completa
         entity.addEventListener('loaded', () => {
           setTimeout(() => {
             entity.object3D.lookAt(0, y, 0);
-            entity.object3D.rotateZ(THREE.MathUtils.degToRad(45)); // Ajusta la rotación estática si la necesitas
+            entity.object3D.rotateZ(THREE.MathUtils.degToRad(obj.rotation || 0));
           }, 100);
         });
       });
     })
     .catch(error => console.error('Error cargando el archivo session.json:', error));
+}
+
+function initZoom() {
+  let currentScale = 1;
+
+  window.addEventListener('wheel', (event) => {
+    const container = document.getElementById('celestial-container');
+    if (event.deltaY < 0) {
+      currentScale += 0.1;
+    } else {
+      currentScale = Math.max(0.1, currentScale - 0.1);
+    }
+    container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+  });
+
+  let initialDistance = null;
+
+  window.addEventListener('touchmove', (event) => {
+    if (event.touches.length === 2) {
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+
+      if (!initialDistance) {
+        initialDistance = currentDistance;
+        return;
+      }
+
+      const container = document.getElementById('celestial-container');
+      const diff = currentDistance - initialDistance;
+
+      if (diff > 10) {
+        currentScale += 0.02;
+        initialDistance = currentDistance;
+      } else if (diff < -10) {
+        currentScale = Math.max(0.1, currentScale - 0.02);
+        initialDistance = currentDistance;
+      }
+
+      container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+    }
+  });
+
+  window.addEventListener('touchend', () => {
+    initialDistance = null;
+  });
 }
