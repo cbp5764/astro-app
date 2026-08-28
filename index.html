@@ -6,7 +6,7 @@
     <title>Astro AR Session</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="app.js" defer></script>
+    <script src="app.js?v=3" defer></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <div id="permission-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center; color: white; font-family: sans-serif;">
@@ -14,7 +14,7 @@
     </div>
 
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
-      <a-camera position="0 0 0" rotation-reader></a-camera>
+      <a-camera gps-camera rotation-reader></a-camera>
       <a-entity id="celestial-container"></a-entity>
     </a-scene>
   </body>
