@@ -1,6 +1,6 @@
 let celestialEntities = [];
 let baseSizes = new Map();
-let currentScale = 0.5;
+let currentScale = 0.5; // Tamaño mínimo por defecto al arrancar los objetos
 
 document.getElementById('start-btn').addEventListener('click', async () => {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -14,7 +14,10 @@ document.getElementById('start-btn').addEventListener('click', async () => {
       console.error(error);
     }
   }
+  
+  // Ocultar la capa del botón
   document.getElementById('permission-overlay').style.display = 'none';
+
   loadSessionData();
   initZoom();
 });
@@ -40,12 +43,13 @@ function loadSessionData() {
         entity.setAttribute('position', `${x} ${y} ${z}`);
 
         const objectSize = obj.size || 3;
-        entity.setAttribute('width', objectSize);
-        entity.setAttribute('height', objectSize);
-
-        // Guardamos la referencia y su tamaño base
         celestialEntities.push(entity);
         baseSizes.set(entity, objectSize);
+
+        // Aplicar el tamaño inicial mínimo (0.5)
+        const initialAppliedSize = objectSize * currentScale;
+        entity.setAttribute('width', initialAppliedSize);
+        entity.setAttribute('height', initialAppliedSize);
 
         container.appendChild(entity);
 
@@ -64,7 +68,6 @@ function initZoom() {
   let initialDistance = null;
   let baseScale = currentScale;
 
-  // Zoom táctil (Pinch-to-zoom de un solo gesto directo)
   window.addEventListener('touchstart', (event) => {
     if (event.touches.length === 2) {
       initialDistance = Math.hypot(
@@ -82,8 +85,8 @@ function initZoom() {
         event.touches[0].clientY - event.touches[1].clientY
       );
 
-      // Calcula el factor de escala proporcional directo al movimiento de los dedos
       const factor = currentDistance / initialDistance;
+      // Límites de zoom: mínimo 0.5 y máximo 2.5
       currentScale = Math.min(2.5, Math.max(0.5, baseScale * factor));
       
       applyZoomToEntities();
