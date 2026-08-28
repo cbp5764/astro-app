@@ -64,16 +64,6 @@ function initZoom() {
   let initialDistance = null;
   let baseScale = currentScale;
 
-  // Zoom con la rueda del ratón (Escritorio)
-  window.addEventListener('wheel', (event) => {
-    if (event.deltaY < 0) {
-      currentScale = Math.min(5, currentScale * 1.2);
-    } else {
-      currentScale = Math.max(0.1, currentScale / 1.2);
-    }
-    applyZoomToEntities();
-  });
-
   // Zoom táctil (Pinch-to-zoom de un solo gesto directo)
   window.addEventListener('touchstart', (event) => {
     if (event.touches.length === 2) {
@@ -94,7 +84,7 @@ function initZoom() {
 
       // Calcula el factor de escala proporcional directo al movimiento de los dedos
       const factor = currentDistance / initialDistance;
-      currentScale = Math.min(5, Math.max(0.1, baseScale * factor));
+      currentScale = Math.min(2.5, Math.max(0.5, baseScale * factor));
       
       applyZoomToEntities();
     }
