@@ -2,8 +2,8 @@
   {
     "name": "Nebulosa Pacman",
     "image": "images/NGC281r.jpg",
-    "azimuth": 44.8,
-    "altitude": 42.4,
+    "azimuth": 32,
+    "altitude": 50,
     "rotation": 0,
     "size": 1.5
   }
