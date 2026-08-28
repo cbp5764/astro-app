@@ -61,49 +61,49 @@ function loadSessionData() {
 }
 
 function initZoom() {
+  let initialDistance = null;
+  let baseScale = currentScale;
+
   // Zoom con la rueda del ratón (Escritorio)
   window.addEventListener('wheel', (event) => {
     if (event.deltaY < 0) {
-      currentScale = Math.min(3, currentScale + 0.1);
+      currentScale = Math.min(5, currentScale * 1.2);
     } else {
-      currentScale = Math.max(0.2, currentScale - 0.1);
+      currentScale = Math.max(0.1, currentScale / 1.2);
     }
     applyZoomToEntities();
   });
 
-  // Zoom táctil (Pinch-to-zoom)
-  let initialDistance = null;
-
-  window.addEventListener('touchmove', (event) => {
+  // Zoom táctil (Pinch-to-zoom de un solo gesto directo)
+  window.addEventListener('touchstart', (event) => {
     if (event.touches.length === 2) {
-      const touch1 = event.touches[0];
-      const touch2 = event.touches[1];
-      const currentDistance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
+      initialDistance = Math.hypot(
+        event.touches[0].clientX - event.touches[1].clientX,
+        event.touches[0].clientY - event.touches[1].clientY
       );
-
-      if (!initialDistance) {
-        initialDistance = currentDistance;
-        return;
-      }
-
-      const diff = currentDistance - initialDistance;
-
-      if (Math.abs(diff) > 5) {
-        if (diff > 0) {
-          currentScale = Math.min(3, currentScale + 0.02);
-        } else {
-          currentScale = Math.max(0.2, currentScale - 0.02);
-        }
-        initialDistance = currentDistance;
-        applyZoomToEntities();
-      }
+      baseScale = currentScale;
     }
   }, { passive: true });
 
-  window.addEventListener('touchend', () => {
-    initialDistance = null;
+  window.addEventListener('touchmove', (event) => {
+    if (event.touches.length === 2 && initialDistance) {
+      const currentDistance = Math.hypot(
+        event.touches[0].clientX - event.touches[1].clientX,
+        event.touches[0].clientY - event.touches[1].clientY
+      );
+
+      // Calcula el factor de escala proporcional directo al movimiento de los dedos
+      const factor = currentDistance / initialDistance;
+      currentScale = Math.min(5, Math.max(0.1, baseScale * factor));
+      
+      applyZoomToEntities();
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', (event) => {
+    if (event.touches.length < 2) {
+      initialDistance = null;
+    }
   }, { passive: true });
 }
 
