@@ -39,6 +39,11 @@ function loadSessionData() {
         entity.setAttribute('height', '3');
 
         container.appendChild(entity);
+
+        // Forzar que la imagen mire siempre hacia el centro (0, 0, 0) donde está la cámara
+        entity.addEventListener('loaded', () => {
+          entity.object3D.lookAt(0, y, 0); // Mantiene la altura y gira hacia el centro
+        });
       });
     })
     .catch(error => console.error('Error cargando el archivo session.json:', error));
