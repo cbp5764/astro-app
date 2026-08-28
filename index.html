@@ -2,49 +2,48 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
     <title>Astro AR Session</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="app.js?v=9" defer></script>
+    <script src="app.js?v=10" defer></script>
     <style>
-      /* Estilos independientes para que el overlay no afecte a la cámara de A-Frame */
-      #permission-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
+      html, body {
+        margin: 0;
+        padding: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        z-index: 99999;
+        overflow: hidden;
+      }
+      #permission-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 999999;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        box-sizing: border-box;
         padding: 20px;
+        box-sizing: border-box;
       }
       #start-btn {
-        padding: 15px 30px;
+        padding: 16px 32px;
         font-size: 18px;
         background: #007aff;
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         cursor: pointer;
-        max-width: 90%;
-        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       }
     </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    
-    <!-- Capa del botón totalmente aislada -->
+  <body>
     <div id="permission-overlay">
       <button id="start-btn">Iniciar Sesión AR</button>
     </div>
 
-    <!-- Escena de A-Frame con su comportamiento de cámara original -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false">
       <a-camera gps-camera rotation-reader></a-camera>
       <a-entity id="celestial-container" scale="1 1 1"></a-entity>
