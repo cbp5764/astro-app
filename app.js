@@ -1,3 +1,7 @@
+let celestialEntities = [];
+let baseSizes = new Map();
+let currentScale = 1;
+
 document.getElementById('start-btn').addEventListener('click', async () => {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     try {
@@ -39,6 +43,10 @@ function loadSessionData() {
         entity.setAttribute('width', objectSize);
         entity.setAttribute('height', objectSize);
 
+        // Guardamos la referencia y su tamaño base
+        celestialEntities.push(entity);
+        baseSizes.set(entity, objectSize);
+
         container.appendChild(entity);
 
         entity.addEventListener('loaded', () => {
@@ -53,20 +61,17 @@ function loadSessionData() {
 }
 
 function initZoom() {
-  let currentScale = 1;
-
   // Zoom con la rueda del ratón (Escritorio)
   window.addEventListener('wheel', (event) => {
-    const container = document.getElementById('celestial-container');
     if (event.deltaY < 0) {
-      currentScale += 0.1;
+      currentScale = Math.min(3, currentScale + 0.1);
     } else {
-      currentScale = Math.max(0.1, currentScale - 0.1);
+      currentScale = Math.max(0.2, currentScale - 0.1);
     }
-    container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+    applyZoomToEntities();
   });
 
-  // Zoom táctil optimizado con passive: true para evitar bloqueos del navegador
+  // Zoom táctil (Pinch-to-zoom)
   let initialDistance = null;
 
   window.addEventListener('touchmove', (event) => {
@@ -83,17 +88,16 @@ function initZoom() {
         return;
       }
 
-      const container = document.getElementById('celestial-container');
       const diff = currentDistance - initialDistance;
 
-      if (Math.abs(diff) > 5) { // Sensibilidad mejorada
+      if (Math.abs(diff) > 5) {
         if (diff > 0) {
-          currentScale += 0.015;
+          currentScale = Math.min(3, currentScale + 0.02);
         } else {
-          currentScale = Math.max(0.1, currentScale - 0.015);
+          currentScale = Math.max(0.2, currentScale - 0.02);
         }
         initialDistance = currentDistance;
-        container.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+        applyZoomToEntities();
       }
     }
   }, { passive: true });
@@ -101,4 +105,13 @@ function initZoom() {
   window.addEventListener('touchend', () => {
     initialDistance = null;
   }, { passive: true });
+}
+
+function applyZoomToEntities() {
+  celestialEntities.forEach(entity => {
+    const baseSize = baseSizes.get(entity);
+    const newSize = baseSize * currentScale;
+    entity.setAttribute('width', newSize);
+    entity.setAttribute('height', newSize);
+  });
 }
