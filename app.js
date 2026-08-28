@@ -33,8 +33,10 @@ function loadSessionData() {
         const y = radius * Math.cos(phi);
         const z = -radius * Math.sin(phi) * Math.cos(theta);
 
-        entity.setAttribute('position', `${x} ${y} ${z}`);
-        entity.setAttribute('rotation', `0 ${obj.azimuth} ${obj.rotation}`);
+        //entity.setAttribute('position', `${x} ${y} ${z}`);
+        entity.setAttribute('position', `0 0 -3`);
+        //entity.setAttribute('rotation', `0 ${obj.azimuth} ${obj.rotation}`);
+        entity.setAttribute('rotation', `0 0 0`);
         entity.setAttribute('width', '3');
         entity.setAttribute('height', '3');
 
