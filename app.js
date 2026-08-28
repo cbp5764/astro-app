@@ -1,6 +1,6 @@
 let celestialEntities = [];
 let baseSizes = new Map();
-let currentScale = 1;
+let currentScale = 0.5;
 
 document.getElementById('start-btn').addEventListener('click', async () => {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
